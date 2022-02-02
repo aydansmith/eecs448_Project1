@@ -16,15 +16,18 @@ def main():
     SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
     CLOCK = pygame.time.Clock()
     SCREEN.fill(BLACK)
+    player1ShipBoard = createPlayer1ShipGrid() # 2-D array with rects stored in it
+    player1TargetBoard = createPlayer1TargetGrid() # 2-D array with rects stored in it
+    player2ShipBoard = createPlayer1ShipGrid() # 2-D array with rects stored in it
+    player2TargetBoard = createPlayer1TargetGrid() # 2-D array with rects stored in it
+    player1hits=[]
+    player1misses=[]
+    player2hits=[]
+    player2misses=[]
     #print(getRow(player1ShipBoard, (player1ShipBoard[1])[0]))
     #print(len(player1ShipBoard))
     while True:
-        player1ShipBoard = createPlayer1ShipGrid() # 2-D array with rects stored in it
-        player1TargetBoard = createPlayer1TargetGrid() # 2-D array with rects stored in it
-        player1hits=[]
-        printBoard(player1ShipBoard, player1hits)
-        printBoard(player1TargetBoard, player1hits)
-        player1hits.append((player1ShipBoard[0])[0])
+        pos = pygame.mouse.get_pos()
         printBoard(player1ShipBoard, player1hits)
         printBoard(player1TargetBoard, player1hits)
         # createPlayer1ShipGrid()
@@ -32,8 +35,20 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                #player1hits.append((player1ShipBoard[0])[0])
+                player1hits = checkForCollision(player1TargetBoard, pos, player1hits)
 
         pygame.display.update()
+
+def checkForCollision(board, pos, hits):
+    for x in range(0, len(board)):
+        for y in range(0, len(board)):
+            tempRect = (board[x])[y]
+            if tempRect.collidepoint(pos):
+                hits.append(tempRect)
+                return(hits)
+    return hits
 
 def getRow(board, rect):
     for x in range(0, (len(board))):
