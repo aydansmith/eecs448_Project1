@@ -1,0 +1,13 @@
+Estimate of hours to complete battleship.py
+- Refreshing on python: 2 hours x 5 people = 10 hours
+- Learning pygame: 2 hours x 5 people = 10 hours
+- Coding grids in pygame: 4 hours
+- Switching colors in grid: 2 hours
+- Coding logic to add ships: 6 hours
+- Coding logic to get number of ships: 1 hour
+- Coding the switch of turns: 2 hours
+- Storing hits and misses: 3 hours
+- Coding logic to check for end of game: 2 hours
+- Testing and final improvements: 6 hours
+- Stylistic Changes: 3 hours
+-Total Hours Estimate: 49 hours +/- 5 hours
