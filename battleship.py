@@ -166,19 +166,6 @@ def printShipBoard(board, ships):
             else:
                 pygame.draw.rect(SCREEN, WHITE, y, 1)
 
-def createPlayer1ShipGridNew():
-    blockSize = 20 #Set the size of the grid block
-    playerBoard = []
-    for x in range(0, 200, blockSize):
-        for y in range(100, 300, blockSize):
-            rect = pygame.Rect(x, y, blockSize, blockSize)
-            playerBoard.append(rect)
-            #pygame.draw.rect(SCREEN, WHITE, rect, 1)
-    
-    for x in range(230, WINDOW_WIDTH, blockSize):
-        for y in range(100, 300, blockSize):
-            rect = pygame.Rect(x, y, blockSize, blockSize)
-            #pygame.draw.rect(SCREEN, WHITE, rect, 1)
 
 if __name__ == "__main__":
     main()
