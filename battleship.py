@@ -93,19 +93,23 @@ def getRectangle(board, pos):
                 return tempRect
 
 def getRow(board, rect):
-    for x in range(0, (len(board))):
-        for y in range(0,(len(board))):
+    tempRect = None
+    for x in range(0, 10):
+        for y in range(0,10):
             tempRect = (board[x])[y]
             if tempRect == rect:
                 return x
+    #print(tempRect)
     return -1
 
 def getCol(board, rect):
-    for x in range(0, 9):
-        for y in range(0,9):
+    tempRect = None
+    for x in range(0, 10):
+        for y in range(0,10):
             tempRect = (board[x])[y]
             if tempRect == rect:
                 return y
+    #print(tempRect)
     return -1
 
 def inHits(board, rect):
