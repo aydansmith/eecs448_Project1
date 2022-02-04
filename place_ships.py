@@ -30,8 +30,6 @@ def placePlayer1Ships(screen, ships, placedShips, shipBoard):
                     wasPlaced = attempt[1]
                     if(wasPlaced):
                         shipLength = shipLength - 1
-                    #rect = battleship.getRectangle(shipBoard, pos)
-                    #print(rect, battleship.getRow(shipBoard, rect), battleship.getCol(shipBoard, rect))
             pygame.display.update()
         else:
             shipsCopy.pop(0)
@@ -77,6 +75,9 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
 def addShip(shipBoard, placedShips, index, pos):
     shipAdded = False
     currentShip = placedShips[index]
+    rect = battleship.getRectangle(shipBoard, pos)
+    if battleship.getRow(shipBoard, rect) == -1 or battleship.getCol(shipBoard, rect) == -1:
+        return(placedShips, shipAdded) 
     if(len(currentShip) == 0):
         alreadyPlaced = inShips(placedShips, pos)
         if not alreadyPlaced:
@@ -96,10 +97,8 @@ def addShip(shipBoard, placedShips, index, pos):
 def touchesShip(shipBoard, placedShips, index, pos):
     currentShip = placedShips[index]
     rect = battleship.getRectangle(shipBoard, pos)
-    print(rect)
     row = battleship.getRow(shipBoard, rect)
     col = battleship.getCol(shipBoard, rect)
-    print(row, col)
     if len(currentShip) == 1:
         for ship in currentShip:
             currentRow = battleship.getRow(shipBoard, ship)
