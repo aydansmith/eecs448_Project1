@@ -25,14 +25,13 @@ def placePlayer1Ships(screen, ships, placedShips, shipBoard):
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    #player1hits.append((player1ShipBoard[0])[0])
-                    #rectangle = battleship.getRectangle(shipBoard, pos)
                     attempt = addShip(shipBoard, placedShips, index, pos)
                     placedShips = attempt[0]
                     wasPlaced = attempt[1]
                     if(wasPlaced):
                         shipLength = shipLength - 1
-                    #player1Turn = switchTurn(player1Turn)
+                    #rect = battleship.getRectangle(shipBoard, pos)
+                    #print(rect, battleship.getRow(shipBoard, rect), battleship.getCol(shipBoard, rect))
             pygame.display.update()
         else:
             shipsCopy.pop(0)
@@ -60,14 +59,12 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    #player1hits.append((player1ShipBoard[0])[0])
-                    #rectangle = battleship.getRectangle(shipBoard, pos)
                     attempt = addShip(shipBoard, placedShips, index, pos)
                     placedShips = attempt[0]
                     wasPlaced = attempt[1]
                     if(wasPlaced):
                         shipLength = shipLength - 1
-                    #player1Turn = switchTurn(player1Turn)
+                   
             pygame.display.update()
         else:
             shipsCopy.pop(0)
@@ -99,8 +96,10 @@ def addShip(shipBoard, placedShips, index, pos):
 def touchesShip(shipBoard, placedShips, index, pos):
     currentShip = placedShips[index]
     rect = battleship.getRectangle(shipBoard, pos)
+    print(rect)
     row = battleship.getRow(shipBoard, rect)
     col = battleship.getCol(shipBoard, rect)
+    print(row, col)
     if len(currentShip) == 1:
         for ship in currentShip:
             currentRow = battleship.getRow(shipBoard, ship)
