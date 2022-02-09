@@ -1,3 +1,4 @@
+import copy
 from operator import truediv
 from matplotlib.pyplot import pause
 import pygame
@@ -11,6 +12,7 @@ BLACK = (0, 0, 0)
 WHITE = (200, 200, 200)
 RED = (255, 0, 0)
 BLUE = (0, 0, 255)
+GREEN = (0, 255, 0)
 WINDOW_HEIGHT = 400
 WINDOW_WIDTH = 430
 SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -27,35 +29,40 @@ def main():
     player1misses=[]
     player1ships = [4,4,2,2]
     player1placedShips = [[],[],[],[]]
+    copyPlayer1placedShips = []
     player2ShipBoard = createPlayer1ShipGrid() # 2-D array with rects stored in it
     player2TargetBoard = createPlayer1TargetGrid() # 2-D array with rects stored in it
     player2hits=[]
     player2misses=[]
     player2ships = [4,4,2,2]
     player2placedShips = [[],[],[],[]]
+    copyPlayer2placedShips = []
     player1Turn = True
-    shipsPlaced = False
     player1ready = False
     player2ready = False
+    gameover = False
     #print(getRow(player1ShipBoard, (player1ShipBoard[1])[0]))
     #print(len(player1ShipBoard))
     
-    while True:
+    while not gameover:
         pos = pygame.mouse.get_pos()
         if not player1ready:
             place_ships.placePlayer1Ships(SCREEN, player1ships, player1placedShips, player1ShipBoard)
             player1ready = True
+            copyPlayer1placedShips = createShallowCopy(player1placedShips)  
         if not player2ready:
             place_ships.placePlayer2Ships(SCREEN, player2ships, player2placedShips, player2ShipBoard)
             player2ready = True
-            print(player1placedShips)
+            copyPlayer2placedShips = createShallowCopy(player2placedShips)  
         add_text.add_text(SCREEN, 'Battleship')
         if(player1Turn):
+            add_text.add_text(SCREEN, 'Player 1 Turn')
             printShipBoard(player1ShipBoard, player1placedShips)
-            printBoard(player1TargetBoard, player1hits)
+            printBoard(player1TargetBoard, player1hits, player1misses)
         else:
-            printBoard(player2ShipBoard, player2hits)
-            printBoard(player2TargetBoard, player2hits)
+            add_text.add_text(SCREEN, 'Player 2 Turn')
+            printShipBoard(player2ShipBoard, player2placedShips)
+            printBoard(player2TargetBoard, player2hits, player2misses)
         # createPlayer1ShipGrid()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -63,27 +70,97 @@ def main():
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 #player1hits.append((player1ShipBoard[0])[0])
-                player1hits = checkForCollision(player1TargetBoard, pos, player1hits)
-                shipsPlaced = True
+                if(player1Turn):
+                    played = checkForCollision(player1TargetBoard, player2ShipBoard, pos, player1hits, player1misses, player2placedShips, copyPlayer2placedShips)
+                    if played: 
+                        printShipBoard(player1ShipBoard, player1placedShips)
+                        printBoard(player1TargetBoard, player1hits, player1misses)
+                        pygame.display.update()
+                        sunkenShip = shipSunk(copyPlayer2placedShips)
+                        if(sunkenShip):
+                            add_text.add_text(SCREEN, 'You sunk a ship!')
+                            pygame.display.update()
+                            ended = gameIsOver(copyPlayer2placedShips)
+                            if ended:
+                                gameover = True
+                                add_text.add_text(SCREEN, 'Player 1 won!')
+                                pygame.display.update()
+                        pause(3)
+                        player1Turn = False
+                else:
+                    played = checkForCollision(player2TargetBoard, player1ShipBoard, pos, player2hits, player2misses, player1placedShips, copyPlayer1placedShips)
+                    if played:
+                        printShipBoard(player2ShipBoard, player2placedShips)
+                        printBoard(player2TargetBoard, player2hits, player2misses)
+                        pygame.display.update()
+                        sunkenShip = shipSunk(copyPlayer1placedShips)
+                        if(sunkenShip):
+                            add_text.add_text(SCREEN, 'You sunk a ship!')
+                            pygame.display.update()
+                            ended = gameIsOver(copyPlayer1placedShips)
+                            if ended:
+                                gameover = True
+                                add_text.add_text(SCREEN, 'Player 2 won!')
+                                pygame.display.update()
+                        pause(3)
+                        player1Turn = True
                 #player1Turn = switchTurn(player1Turn)
 
         pygame.display.update()
 
-def switchTurn(turn):
-    if turn:
+def createShallowCopy(ships):
+    temp = []
+    temp2 = []
+    for x in ships:
+        temp2 = []
+        for y in x:
+            temp2.append(y)
+        temp.append(temp2)
+    return temp
+
+def checkForCollision(targetBoard, shipBoard, pos, hits, misses, shipsPlaced, shipsCopy):
+    hit = False
+    rect = getRectangle(targetBoard, pos)
+    row = getRow(targetBoard, rect)
+    col = getCol(targetBoard, rect)
+    if row == -1 or col == -1:
         return False
     else:
+        tempRectTarget = (targetBoard[row])[col]
+        tempRectShip = (shipBoard[row])[col]
+        alreadyHit = inHits(hits, tempRectShip)
+        alreadyMissed = inHits(misses, tempRectShip)
+        if alreadyHit or alreadyMissed: 
+            return False
+        inShipsList = inShips(shipsPlaced, tempRectShip)
+        if inShipsList:
+            hits.append(tempRectTarget)
+            hits.append(tempRectShip)
+            removeFromShipsCopy(tempRectShip, shipsCopy)
+
+        else:
+            misses.append(tempRectTarget)
+            misses.append(tempRectShip)
+    return True
+    
+def removeFromShipsCopy(rect, shipsCopy):
+    for x in shipsCopy:
+        for y in x:
+            if rect == y:
+                x.remove(y)
+
+def shipSunk(shipsCopy):
+    for x in shipsCopy:
+        if(len(x) == 0):
+            shipsCopy.remove(x)
+            return True
+    return False
+
+def gameIsOver(shipsCopy):
+    if(len(shipsCopy) == 0):
         return True
-
-
-def checkForCollision(board, pos, hits):
-    for x in range(0, len(board)):
-        for y in range(0, len(board)):
-            tempRect = (board[x])[y]
-            if tempRect.collidepoint(pos):
-                hits.append(tempRect)
-                return(hits)
-    return hits
+    else:
+        return False
 
 def getRectangle(board, pos):
     for x in range(0, len(board)):
@@ -125,6 +202,12 @@ def inShips(board, rect):
                 return True
     return False
 
+def inHitShips(hits, rect):
+    for x in hits:
+        if rect == x:
+            return True
+    return False
+
 def createPlayer1ShipGrid():
     blockSize = 20 #Set the size of the grid block
     playerBoard = []
@@ -150,11 +233,13 @@ def createPlayer1TargetGrid():
     return playerBoard
 
 
-def printBoard(board, hits):
+def printBoard(board, hits, misses):
     for x in board:
         for y in x:
             if(inHits(hits, y)):
                 pygame.draw.rect(SCREEN, RED, y, 1)
+            elif(inHits(misses, y)):
+                pygame.draw.rect(SCREEN, GREEN, y, 1)
             else:
                 pygame.draw.rect(SCREEN, WHITE, y, 1)
 
