@@ -129,16 +129,18 @@ def checkForCollision(targetBoard, shipBoard, pos, hits, misses, shipsPlaced, sh
         tempRectTarget = (targetBoard[row])[col]
         tempRectShip = (shipBoard[row])[col]
         alreadyHit = inHits(hits, tempRectShip)
-        alreadyMissed = inHits(misses, tempRectShip)
+        alreadyMissed = inMisses(misses, tempRectShip)
         if alreadyHit or alreadyMissed: 
             return False
         inShipsList = inShips(shipsPlaced, tempRectShip)
         if inShipsList:
+            add_text.add_text(SCREEN, 'You hit a ship!')
             hits.append(tempRectTarget)
             hits.append(tempRectShip)
             removeFromShipsCopy(tempRectShip, shipsCopy)
 
         else:
+            add_text.add_text(SCREEN, 'You did not hit a ship!')
             misses.append(tempRectTarget)
             misses.append(tempRectShip)
     return True
@@ -195,6 +197,12 @@ def inHits(board, rect):
             return True
     return False
 
+def inMisses(board, rect):
+    for x in board:
+        if rect == x:
+            return True
+    return False
+
 def inShips(board, rect):
     for x in board:
         for y in x:
@@ -238,7 +246,7 @@ def printBoard(board, hits, misses):
         for y in x:
             if(inHits(hits, y)):
                 pygame.draw.rect(SCREEN, RED, y, 1)
-            elif(inHits(misses, y)):
+            elif(inMisses(misses, y)):
                 pygame.draw.rect(SCREEN, GREEN, y, 1)
             else:
                 pygame.draw.rect(SCREEN, WHITE, y, 1)
