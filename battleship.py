@@ -9,6 +9,8 @@ import get_ships_num
 
 # following code is inspired and similar to thread on creating a grid for a snake game in pygane
 # https://stackoverflow.com/questions/33963361/how-to-make-a-grid-in-pygame
+
+#colors in RGB form
 BLACK = (0, 0, 0)
 WHITE = (200, 200, 200)
 RED = (255, 0, 0)
