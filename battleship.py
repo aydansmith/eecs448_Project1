@@ -14,7 +14,7 @@ RED = (255, 0, 0)
 BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
 WINDOW_HEIGHT = 400
-WINDOW_WIDTH = 430
+WINDOW_WIDTH = 490
 SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
 def main():
     global SCREEN, CLOCK
@@ -219,7 +219,7 @@ def inHitShips(hits, rect):
 def createPlayer1ShipGrid():
     blockSize = 20 #Set the size of the grid block
     playerBoard = []
-    for x in range(0, 200, blockSize):
+    for x in range(30, 230, blockSize):
         subBoard = []
         for y in range(100, 300, blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
@@ -231,7 +231,7 @@ def createPlayer1ShipGrid():
 def createPlayer1TargetGrid():
     blockSize = 20 #Set the size of the grid block
     playerBoard = []
-    for x in range(230, WINDOW_WIDTH, blockSize):
+    for x in range(260, WINDOW_WIDTH-30, blockSize):
         subBoard = []
         for y in range(100, 300, blockSize):
             rect = pygame.Rect(x, y, blockSize, blockSize)
