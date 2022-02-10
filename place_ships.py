@@ -20,7 +20,7 @@ def placePlayer1Ships(screen, ships, placedShips, shipBoard):
             add_text.add_labels_ships(screen)
             add_text.add_labels_middle(screen)
             pos = pygame.mouse.get_pos()
-            battleship.printShipBoard(shipBoard, placedShips)
+            battleship.printShipBoard(shipBoard, placedShips, [])
             # createPlayer1ShipGrid()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -52,7 +52,7 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
             toDisplay = 'Player 2, place your ship of length ' + stringofint
             add_text.add_text(screen, toDisplay)
             pos = pygame.mouse.get_pos()
-            battleship.printShipBoard(shipBoard, placedShips)
+            battleship.printShipBoard(shipBoard, placedShips, [])
             # createPlayer1ShipGrid()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:

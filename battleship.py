@@ -58,11 +58,11 @@ def main():
         add_text.add_labels_targets(SCREEN)
         if(player1Turn):
             add_text.add_text(SCREEN, 'Player 1 Turn')
-            printShipBoard(player1ShipBoard, player1placedShips)
+            printShipBoard(player1ShipBoard, player1placedShips, player2hits)
             printBoard(player1TargetBoard, player1hits, player1misses)
         else:
             add_text.add_text(SCREEN, 'Player 2 Turn')
-            printShipBoard(player2ShipBoard, player2placedShips)
+            printShipBoard(player2ShipBoard, player2placedShips, player1hits)
             printBoard(player2TargetBoard, player2hits, player2misses)
         # createPlayer1ShipGrid()
         for event in pygame.event.get():
@@ -74,7 +74,7 @@ def main():
                 if(player1Turn):
                     played = checkForCollision(player1TargetBoard, player2ShipBoard, pos, player1hits, player1misses, player2placedShips, copyPlayer2placedShips)
                     if played: 
-                        printShipBoard(player1ShipBoard, player1placedShips)
+                        printShipBoard(player1ShipBoard, player1placedShips, player2hits)
                         printBoard(player1TargetBoard, player1hits, player1misses)
                         pygame.display.update()
                         sunkenShip = shipSunk(copyPlayer2placedShips)
@@ -91,7 +91,7 @@ def main():
                 else:
                     played = checkForCollision(player2TargetBoard, player1ShipBoard, pos, player2hits, player2misses, player1placedShips, copyPlayer1placedShips)
                     if played:
-                        printShipBoard(player2ShipBoard, player2placedShips)
+                        printShipBoard(player2ShipBoard, player2placedShips, player1hits)
                         printBoard(player2TargetBoard, player2hits, player2misses)
                         pygame.display.update()
                         sunkenShip = shipSunk(copyPlayer1placedShips)
@@ -252,11 +252,14 @@ def printBoard(board, hits, misses):
             else:
                 pygame.draw.rect(SCREEN, WHITE, y, 1)
 
-def printShipBoard(board, ships):
+def printShipBoard(board, ships, hits):
     for x in board:
         for y in x:
             if(inShips(ships, y)):
-                pygame.draw.rect(SCREEN, BLUE, y, 1)
+                if(inHits(hits, y)):
+                    pygame.draw.rect(SCREEN, RED, y, 1)
+                else:
+                    pygame.draw.rect(SCREEN, BLUE, y, 1)
             else:
                 pygame.draw.rect(SCREEN, WHITE, y, 1)
 
