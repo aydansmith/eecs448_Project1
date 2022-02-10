@@ -55,6 +55,7 @@ def main():
             player2ready = True
             copyPlayer2placedShips = createShallowCopy(player2placedShips)  
         add_text.add_text(SCREEN, 'Battleship')
+        add_text.add_labels_targets(SCREEN)
         if(player1Turn):
             add_text.add_text(SCREEN, 'Player 1 Turn')
             printShipBoard(player1ShipBoard, player1placedShips)
