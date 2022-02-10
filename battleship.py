@@ -5,6 +5,7 @@ import pygame
 import sys
 import add_text
 import place_ships
+import get_ships_num
 
 # following code is inspired and similar to thread on creating a grid for a snake game in pygane
 # https://stackoverflow.com/questions/33963361/how-to-make-a-grid-in-pygame
@@ -41,6 +42,11 @@ def main():
     player1ready = False
     player2ready = False
     gameover = False
+    arrays = get_ships_num.get_ships(player1ships, player2ships, SCREEN, player1placedShips, player2placedShips)
+    player1ships = arrays[0]
+    player2ships = arrays[1]
+    player1placedShips = arrays[2]
+    player2placedShips = arrays[3]
     #print(getRow(player1ShipBoard, (player1ShipBoard[1])[0]))
     #print(len(player1ShipBoard))
     
