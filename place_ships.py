@@ -6,13 +6,21 @@ import pygame
 import sys
 import battleship
 import add_text
-
+import time
 def placePlayer1Ships(screen, ships, placedShips, shipBoard):
     shipsCopy = ships
     index = 0
     shipLength = shipsCopy[0]
     initialLength = shipLength
+    startTime = time.time()
     while len(shipsCopy) > 0:
+        currentTime = time.time()
+        if currentTime - startTime > 15:
+            add_text.time_out(screen)
+            pygame.display.update()
+            pause(3)
+            pygame.quit()
+            sys.exit()
         if(shipLength > 0):
             stringofint = (str)(initialLength)
             toDisplay = 'Player 1, place your ship of length ' + stringofint
@@ -31,6 +39,7 @@ def placePlayer1Ships(screen, ships, placedShips, shipBoard):
                     placedShips = attempt[0]
                     wasPlaced = attempt[1]
                     if(wasPlaced):
+                        startTime = time.time()
                         shipLength = shipLength - 1
             pygame.display.update()
         else:
@@ -46,7 +55,15 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
     index = 0
     shipLength = shipsCopy[0]
     initialLength = shipLength
+    startTime = time.time()
     while len(shipsCopy) > 0:
+        currentTime = time.time()
+        if currentTime - startTime > 15:
+            add_text.time_out(screen)
+            pygame.display.update()
+            pause(3)
+            pygame.quit()
+            sys.exit()
         if(shipLength > 0):
             stringofint = (str)(initialLength)
             toDisplay = 'Player 2, place your ship of length ' + stringofint
@@ -63,6 +80,7 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
                     placedShips = attempt[0]
                     wasPlaced = attempt[1]
                     if(wasPlaced):
+                        startTime = time.time()
                         shipLength = shipLength - 1
                    
             pygame.display.update()
