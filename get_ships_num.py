@@ -114,6 +114,7 @@ def get_index(screen, pos):
     rect4 = pygame.Rect(250+offset,200,50,50)
     rect5 = pygame.Rect(330+offset,200,50,50)
     # collide point checks if pos is within the rect object
+    # based off of https://stackoverflow.com/questions/7415109/creating-a-rect-grid-in-pygame
     if rect1.collidepoint(pos):
         return 1
     elif rect2.collidepoint(pos):

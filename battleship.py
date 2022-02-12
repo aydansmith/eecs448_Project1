@@ -206,6 +206,7 @@ def gameIsOver(shipsCopy):
         return False
 
 # return rect object given the board and mouse position
+# based off of https://stackoverflow.com/questions/7415109/creating-a-rect-grid-in-pygame
 def getRectangle(board, pos):
     for x in range(0, len(board)):
         for y in range(0, len(board)):
