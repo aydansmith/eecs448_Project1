@@ -1,12 +1,15 @@
 from matplotlib.pyplot import pause
 import pygame
 import sys
-
+# rgb colors
 BLACK = (0, 0, 0)
 WHITE = (200, 200, 200)
 RED = (255, 0, 0)
+
 # font text is from https://www.geeksforgeeks.org/python-display-text-to-pygame-window/
+# adds text to top of screen
 def add_text(screen, text):
+    # fills the screen black in the area wanted so that previous text doesn't show up still
     screen.fill(BLACK, (0, 0, 430, 80))
     font = pygame.font.Font('freesansbold.ttf', 16)
     text = font.render(text, True, RED)
@@ -14,6 +17,8 @@ def add_text(screen, text):
     textRect.center = (245, 15)
     screen.blit(text, textRect)
 
+# called if the player has taken too long to place ships
+# displays that game will be ending
 def time_out(screen):
     screen.fill(BLACK, (0,0, 430, 490))
     font = pygame.font.Font('freesansbold.ttf', 14)
@@ -26,6 +31,7 @@ def time_out(screen):
     textRect.center = (245, 220)
     screen.blit(text, textRect)
 
+# adds column labels to ship screen
 def add_labels_ships(screen):
     letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
     counter = 0
@@ -37,6 +43,7 @@ def add_labels_ships(screen):
         screen.blit(text, textRect)
         counter = counter + 1
 
+# adds column labels to target screen
 def add_labels_targets(screen):
     letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
     counter = 0
@@ -48,6 +55,7 @@ def add_labels_targets(screen):
         screen.blit(text, textRect)
         counter = counter + 1
 
+# adds row labels to middle of screen
 def add_labels_middle(screen):
     nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     counter = 0
