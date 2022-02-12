@@ -11,7 +11,19 @@ def add_text(screen, text):
     font = pygame.font.Font('freesansbold.ttf', 16)
     text = font.render(text, True, RED)
     textRect = text.get_rect()
-    textRect.center = (215, 15)
+    textRect.center = (245, 15)
+    screen.blit(text, textRect)
+
+def time_out(screen):
+    screen.fill(BLACK, (0,0, 430, 490))
+    font = pygame.font.Font('freesansbold.ttf', 14)
+    text = font.render("You took too long to choose the next valid spot for your ship!", True, RED)
+    textRect = text.get_rect()
+    textRect.center = (245, 200)
+    screen.blit(text, textRect)
+    text = font.render("The game will automatically exit in 3 seconds!", True, RED)
+    textRect = text.get_rect()
+    textRect.center = (245, 220)
     screen.blit(text, textRect)
 
 def add_labels_ships(screen):
