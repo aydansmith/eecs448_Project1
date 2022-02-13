@@ -34,7 +34,7 @@ def main():
     player1ShipBoard = createPlayer1ShipGrid() # 2-D array with rects stored in it, represents player1board for their own ships
     player1TargetBoard = createPlayer1TargetGrid() # 2-D array with rects stored in it, represents the targets for player 1
     player1hits=[] # will store rect objects of hits
-    player1misses=[] # wills tore rect objects of misses
+    player1misses=[] # will store rect objects of misses
     player1ships = [] # will hold the sizes for ships
     player1placedShips = [[],[],[],[]]  # 2d array that will hold the placed ships for player 1
     copyPlayer1placedShips = [] # non pointer copy of player1placedShips
@@ -83,11 +83,15 @@ def main():
             add_text.add_text(SCREEN, 'Player 1 Turn')
             printShipBoard(player1ShipBoard, player1placedShips, player2hits)
             printBoard(player1TargetBoard, player1hits, player1misses)
+            add_text.add_labels_middle(SCREEN)
+            add_text.add_labels_ships(SCREEN)
         # if it is player 2 turn, say that and print their boards
         else:
             add_text.add_text(SCREEN, 'Player 2 Turn')
             printShipBoard(player2ShipBoard, player2placedShips, player1hits)
             printBoard(player2TargetBoard, player2hits, player2misses)
+            add_text.add_labels_middle(SCREEN)
+            add_text.add_labels_ships(SCREEN)
         # handles events in pygame
         for event in pygame.event.get():
             # if the user wants to quit, close pygame
@@ -103,6 +107,8 @@ def main():
                         # if they made a valid move, update the boards
                         printShipBoard(player1ShipBoard, player1placedShips, player2hits)
                         printBoard(player1TargetBoard, player1hits, player1misses)
+                        add_text.add_labels_middle(SCREEN)
+                        add_text.add_labels_ships(SCREEN)
                         pygame.display.update()
                         # check for a sunk ship
                         sunkenShip = shipSunk(copyPlayer2placedShips)
@@ -117,6 +123,10 @@ def main():
                                 pygame.display.update()
                         # wait for three seconds and switch turn
                         pause(3)
+                        if not gameover:
+                            add_text.add_black_screen(SCREEN)
+                            pygame.display.update()
+                            pause(2)
                         player1Turn = False
                 else:
                     # otherwise repeat for player 2
@@ -124,6 +134,8 @@ def main():
                     if played:
                         printShipBoard(player2ShipBoard, player2placedShips, player1hits)
                         printBoard(player2TargetBoard, player2hits, player2misses)
+                        add_text.add_labels_middle(SCREEN)
+                        add_text.add_labels_ships(SCREEN)
                         pygame.display.update()
                         sunkenShip = shipSunk(copyPlayer1placedShips)
                         if(sunkenShip):
@@ -135,6 +147,10 @@ def main():
                                 add_text.add_text(SCREEN, 'Player 2 won!')
                                 pygame.display.update()
                         pause(3)
+                        if not gameover:
+                            add_text.add_black_screen(SCREEN)
+                            pygame.display.update()
+                            pause(2)
                         player1Turn = True
 
         pygame.display.update()

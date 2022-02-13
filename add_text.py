@@ -18,6 +18,9 @@ def add_text(screen, text):
     textRect.center = (245, 15)
     screen.blit(text, textRect)
 
+def add_black_screen(screen):
+    screen.fill(BLACK, (0,0, 490, 400))
+    add_text(screen, 'Switching turns, do not cheat!')
 # called if the player has taken too long to place ships
 # displays that game will be ending
 def time_out(screen):
@@ -34,6 +37,7 @@ def time_out(screen):
 
 # adds column labels to ship screen
 def add_labels_ships(screen):
+    screen.fill(BLACK, (30,90, 190, 8))
     letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
     counter = 0
     font = pygame.font.Font('freesansbold.ttf', 16)
@@ -46,6 +50,7 @@ def add_labels_ships(screen):
 
 # adds column labels to target screen
 def add_labels_targets(screen):
+    screen.fill(BLACK, (270,90, 190, 8))
     letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
     counter = 0
     font = pygame.font.Font('freesansbold.ttf', 16)
@@ -58,6 +63,7 @@ def add_labels_targets(screen):
 
 # adds row labels to middle of screen
 def add_labels_middle(screen):
+    screen.fill(BLACK, (240,110, 8, 200))
     nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     counter = 0
     font = pygame.font.Font('freesansbold.ttf', 16)
