@@ -17,7 +17,7 @@ def add_text(screen, text):
     textRect = text.get_rect()
     textRect.center = (245, 15)
     screen.blit(text, textRect)
-
+# adds screen to not show other player's ships in between turns
 def add_black_screen(screen):
     screen.fill(BLACK, (0,0, 490, 400))
     add_text(screen, 'Switching turns, do not cheat!')
