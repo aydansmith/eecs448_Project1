@@ -34,7 +34,7 @@ def main():
     player1ShipBoard = createPlayer1ShipGrid() # 2-D array with rects stored in it, represents player1board for their own ships
     player1TargetBoard = createPlayer1TargetGrid() # 2-D array with rects stored in it, represents the targets for player 1
     player1hits=[] # will store rect objects of hits
-    player1misses=[] # wills tore rect objects of misses
+    player1misses=[] # will store rect objects of misses
     player1ships = [] # will hold the sizes for ships
     player1placedShips = [[],[],[],[]]  # 2d array that will hold the placed ships for player 1
     copyPlayer1placedShips = [] # non pointer copy of player1placedShips

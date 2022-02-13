@@ -50,7 +50,7 @@ def add_labels_ships(screen):
 
 # adds column labels to target screen
 def add_labels_targets(screen):
-    screen.fill(BLACK, (270,90, 190, 5))
+    screen.fill(BLACK, (270,90, 190, 8))
     letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
     counter = 0
     font = pygame.font.Font('freesansbold.ttf', 16)
@@ -63,7 +63,7 @@ def add_labels_targets(screen):
 
 # adds row labels to middle of screen
 def add_labels_middle(screen):
-    screen.fill(BLACK, (245,110, 5, 200))
+    screen.fill(BLACK, (240,110, 8, 200))
     nums = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
     counter = 0
     font = pygame.font.Font('freesansbold.ttf', 16)
