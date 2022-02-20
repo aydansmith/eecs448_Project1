@@ -121,8 +121,8 @@ def main():
                                 gameover = True
                                 add_text.add_text(SCREEN, 'Player 1 won!')
                                 pygame.display.update()
-                        # wait for three seconds and switch turn
-                        pause(3)
+                        # wait for 1 seconds and switch turn
+                        pause(1)
                         if not gameover:
                             add_text.add_black_screen(SCREEN)
                             pygame.display.update()
@@ -146,7 +146,7 @@ def main():
                                 gameover = True
                                 add_text.add_text(SCREEN, 'Player 2 won!')
                                 pygame.display.update()
-                        pause(3)
+                        pause(1)
                         if not gameover:
                             add_text.add_black_screen(SCREEN)
                             pygame.display.update()
