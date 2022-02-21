@@ -6,6 +6,9 @@ import sys
 import add_text
 import place_ships
 import get_ships_num
+import get_game_mode
+import multiplayer
+import singleplayer
 
 #colors in RGB form
 BLACK = (0, 0, 0)
@@ -19,6 +22,62 @@ WINDOW_HEIGHT = 400
 WINDOW_WIDTH = 490
 #initializes screen in pygame
 SCREEN = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+
+# following code is inspired and similar to thread on creating a grid for a snake game in pygane
+# https://stackoverflow.com/questions/33963361/how-to-make-a-grid-in-pygame
+# creates grid (10x10) with width and height of 20 for each block
+def createPlayer1ShipGrid():
+    blockSize = 20 #Set the size of the grid block
+    playerBoard = []
+    for x in range(30, 230, blockSize):
+        subBoard = []
+        for y in range(100, 300, blockSize):
+            rect = pygame.Rect(x, y, blockSize, blockSize)
+            subBoard.append(rect)
+            #pygame.draw.rect(SCREEN, WHITE, rect, 1)
+        playerBoard.append(subBoard)
+    return playerBoard
+
+# following code is inspired and similar to thread on creating a grid for a snake game in pygane
+# https://stackoverflow.com/questions/33963361/how-to-make-a-grid-in-pygame
+# creates grid (10x10) with width and height of 20 for each block
+def createPlayer1TargetGrid():
+    blockSize = 20 #Set the size of the grid block
+    playerBoard = []
+    for x in range(260, WINDOW_WIDTH-30, blockSize):
+        subBoard = []
+        for y in range(100, 300, blockSize):
+            rect = pygame.Rect(x, y, blockSize, blockSize)
+            subBoard.append(rect)
+            #pygame.draw.rect(SCREEN, WHITE, rect, 1)
+        playerBoard.append(subBoard)
+    return playerBoard
+
+
+player1ShipBoard = createPlayer1ShipGrid() # 2-D array with rects stored in it, represents player1board for their own ships
+player1TargetBoard = createPlayer1TargetGrid() # 2-D array with rects stored in it, represents the targets for player 1
+player1hits=[] # will store rect objects of hits
+player1misses=[] # will store rect objects of misses
+player1ships = [] # will hold the sizes for ships
+player1placedShips = [[],[],[],[]]  # 2d array that will hold the placed ships for player 1
+copyPlayer1placedShips = [] # non pointer copy of player1placedShips
+# same as objects above but for player 2
+player2ShipBoard = createPlayer1ShipGrid() # 2-D array with rects stored in it
+player2TargetBoard = createPlayer1TargetGrid() # 2-D array with rects stored in it
+player2hits=[]
+player2misses=[]
+player2ships = []
+player2placedShips = [[],[],[],[]]
+copyPlayer2placedShips = []
+# keeps track of if it is player 1 turn
+player1Turn = True
+# track if ships have been placed
+player1ready = False
+player2ready = False
+# track if game is over
+gameover = False
+
+
 # main handles all the logic and passing between files
 def main():
     # following code is inspired and similar to thread on creating a grid for a snake game in pygane
@@ -30,130 +89,13 @@ def main():
     CLOCK = pygame.time.Clock()
     #fill screen to black
     SCREEN.fill(BLACK)
-
-    player1ShipBoard = createPlayer1ShipGrid() # 2-D array with rects stored in it, represents player1board for their own ships
-    player1TargetBoard = createPlayer1TargetGrid() # 2-D array with rects stored in it, represents the targets for player 1
-    player1hits=[] # will store rect objects of hits
-    player1misses=[] # will store rect objects of misses
-    player1ships = [] # will hold the sizes for ships
-    player1placedShips = [[],[],[],[]]  # 2d array that will hold the placed ships for player 1
-    copyPlayer1placedShips = [] # non pointer copy of player1placedShips
-    # same as objects above but for player 2
-    player2ShipBoard = createPlayer1ShipGrid() # 2-D array with rects stored in it
-    player2TargetBoard = createPlayer1TargetGrid() # 2-D array with rects stored in it
-    player2hits=[]
-    player2misses=[]
-    player2ships = []
-    player2placedShips = [[],[],[],[]]
-    copyPlayer2placedShips = []
-    # keeps track of if it is player 1 turn
-    player1Turn = True
-    # track if ships have been placed
-    player1ready = False
-    player2ready = False
-    # track if game is over
-    gameover = False
-    # get the number of ships that the user wants for the game and returns a 4 tupe with size and empty placed ships array
-    arrays = get_ships_num.get_ships(player1ships, player2ships, SCREEN, player1placedShips, player2placedShips)
-    player1ships = arrays[0]
-    player2ships = arrays[1]
-    player1placedShips = arrays[2]
-    player2placedShips = arrays[3]
     
-    #run while the game is not ended
-    while not gameover:
-        # gets the position of the mouse on the screen
-        pos = pygame.mouse.get_pos()
-        # if player 1 is not ready, pass to place_ships and have player 1 place their ships
-        if not player1ready:
-            place_ships.placePlayer1Ships(SCREEN, player1ships, player1placedShips, player1ShipBoard)
-            player1ready = True
-            #create non pointer copy
-            copyPlayer1placedShips = createShallowCopy(player1placedShips)  
-        # repeat for player 2
-        if not player2ready:
-            place_ships.placePlayer2Ships(SCREEN, player2ships, player2placedShips, player2ShipBoard)
-            player2ready = True
-            copyPlayer2placedShips = createShallowCopy(player2placedShips)  
-        # add text saying battleship and add rows and cols
-        add_text.add_text(SCREEN, 'Battleship')
-        add_text.add_labels_targets(SCREEN)
-        # if it is player 1 turn, say that and print their boards
-        if(player1Turn):
-            add_text.add_text(SCREEN, 'Player 1 Turn')
-            printShipBoard(player1ShipBoard, player1placedShips, player2hits)
-            printBoard(player1TargetBoard, player1hits, player1misses)
-            add_text.add_labels_middle(SCREEN)
-            add_text.add_labels_ships(SCREEN)
-        # if it is player 2 turn, say that and print their boards
-        else:
-            add_text.add_text(SCREEN, 'Player 2 Turn')
-            printShipBoard(player2ShipBoard, player2placedShips, player1hits)
-            printBoard(player2TargetBoard, player2hits, player2misses)
-            add_text.add_labels_middle(SCREEN)
-            add_text.add_labels_ships(SCREEN)
-        # handles events in pygame
-        for event in pygame.event.get():
-            # if the user wants to quit, close pygame
-            # if the user clicks, we respond accordingly
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                # if it is player 1 turn, check for a hit and checkForCollision will handle all the logic for updating hits and misses
-                if(player1Turn):
-                    played = checkForCollision(player1TargetBoard, player2ShipBoard, pos, player1hits, player1misses, player2placedShips, copyPlayer2placedShips)
-                    if played: 
-                        # if they made a valid move, update the boards
-                        printShipBoard(player1ShipBoard, player1placedShips, player2hits)
-                        printBoard(player1TargetBoard, player1hits, player1misses)
-                        add_text.add_labels_middle(SCREEN)
-                        add_text.add_labels_ships(SCREEN)
-                        pygame.display.update()
-                        # check for a sunk ship
-                        sunkenShip = shipSunk(copyPlayer2placedShips)
-                        # if they sunk a ship, check if all ships are sunk
-                        if(sunkenShip):
-                            add_text.add_text(SCREEN, 'You sunk a ship!')
-                            pygame.display.update()
-                            ended = gameIsOver(copyPlayer2placedShips)
-                            if ended:
-                                gameover = True
-                                add_text.add_text(SCREEN, 'Player 1 won!')
-                                pygame.display.update()
-                        # wait for 1 seconds and switch turn
-                        pause(1)
-                        if not gameover:
-                            add_text.add_black_screen(SCREEN)
-                            pygame.display.update()
-                            pause(2)
-                        player1Turn = False
-                else:
-                    # otherwise repeat for player 2
-                    played = checkForCollision(player2TargetBoard, player1ShipBoard, pos, player2hits, player2misses, player1placedShips, copyPlayer1placedShips)
-                    if played:
-                        printShipBoard(player2ShipBoard, player2placedShips, player1hits)
-                        printBoard(player2TargetBoard, player2hits, player2misses)
-                        add_text.add_labels_middle(SCREEN)
-                        add_text.add_labels_ships(SCREEN)
-                        pygame.display.update()
-                        sunkenShip = shipSunk(copyPlayer1placedShips)
-                        if(sunkenShip):
-                            add_text.add_text(SCREEN, 'You sunk a ship!')
-                            pygame.display.update()
-                            ended = gameIsOver(copyPlayer1placedShips)
-                            if ended:
-                                gameover = True
-                                add_text.add_text(SCREEN, 'Player 2 won!')
-                                pygame.display.update()
-                        pause(1)
-                        if not gameover:
-                            add_text.add_black_screen(SCREEN)
-                            pygame.display.update()
-                            pause(2)
-                        player1Turn = True
+    isSingleplayer = get_game_mode.set_mode(SCREEN)
+    if(isSingleplayer):
+        singleplayer.run()
+    else:
+        multiplayer.run()
 
-        pygame.display.update()
 
 # creates a shallow copy of a 2d array
 def createShallowCopy(ships):
@@ -283,36 +225,6 @@ def inHitShips(hits, rect):
 
 # following code is inspired and similar to thread on creating a grid for a snake game in pygane
 # https://stackoverflow.com/questions/33963361/how-to-make-a-grid-in-pygame
-# creates grid (10x10) with width and height of 20 for each block
-def createPlayer1ShipGrid():
-    blockSize = 20 #Set the size of the grid block
-    playerBoard = []
-    for x in range(30, 230, blockSize):
-        subBoard = []
-        for y in range(100, 300, blockSize):
-            rect = pygame.Rect(x, y, blockSize, blockSize)
-            subBoard.append(rect)
-            #pygame.draw.rect(SCREEN, WHITE, rect, 1)
-        playerBoard.append(subBoard)
-    return playerBoard
-
-# following code is inspired and similar to thread on creating a grid for a snake game in pygane
-# https://stackoverflow.com/questions/33963361/how-to-make-a-grid-in-pygame
-# creates grid (10x10) with width and height of 20 for each block
-def createPlayer1TargetGrid():
-    blockSize = 20 #Set the size of the grid block
-    playerBoard = []
-    for x in range(260, WINDOW_WIDTH-30, blockSize):
-        subBoard = []
-        for y in range(100, 300, blockSize):
-            rect = pygame.Rect(x, y, blockSize, blockSize)
-            subBoard.append(rect)
-            #pygame.draw.rect(SCREEN, WHITE, rect, 1)
-        playerBoard.append(subBoard)
-    return playerBoard
-
-# following code is inspired and similar to thread on creating a grid for a snake game in pygane
-# https://stackoverflow.com/questions/33963361/how-to-make-a-grid-in-pygame
 # prints a board given 2-d array created in above functions. checks for hits and misses and changes color accordingly
 def printBoard(board, hits, misses):
     for x in board:
@@ -337,6 +249,8 @@ def printShipBoard(board, ships, hits):
                     pygame.draw.rect(SCREEN, BLUE, y, 1)
             else:
                 pygame.draw.rect(SCREEN, WHITE, y, 1)
+
+
 
 # so that each import does not call main function
 if __name__ == "__main__":
