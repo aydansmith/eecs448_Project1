@@ -7,6 +7,8 @@ import sys
 import battleship
 import add_text
 import time
+from random import randint
+
 # handles placing of player 1s ships
 def placePlayer1Ships(screen, ships, placedShips, shipBoard):
     shipsCopy = ships
@@ -96,6 +98,49 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
                         startTime = time.time()
                         shipLength = shipLength - 1
                    
+            pygame.display.update()
+        else:
+            shipsCopy.pop(0)
+            print(len(shipsCopy))
+            if(len(shipsCopy) != 0):
+                shipLength = shipsCopy[0]
+                initialLength = shipLength
+                index = index + 1
+
+
+#places the ships for the AI randomly
+# !!!! still needs to implement a check to see if a ship will fit before starting to place
+def placeAiShips(screen, ships, placedShips, shipBoard):
+    print("place AI")
+    shipsCopy = ships
+    index = 0
+    shipLength = shipsCopy[0]
+    initialLength = shipLength
+    startTime = time.time()
+    while len(shipsCopy) > 0:
+        currentTime = time.time()
+        if currentTime - startTime > 15:
+            add_text.time_out(screen)
+            pygame.display.update()
+            pause(3)
+            pygame.quit()
+            sys.exit()
+        if(shipLength > 0):
+            stringofint = (str)(initialLength)
+            toDisplay = 'Player 2, place your ship of length ' + stringofint
+            add_text.add_text(screen, toDisplay)
+            # pos = pygame.mouse.get_pos()
+            x = randint(1, 490)
+            y = randint(1, 400)
+            pos = (x, y)
+            battleship.printShipBoard(shipBoard, placedShips, [])   
+            attempt = addShip(shipBoard, placedShips, index, pos)
+            placedShips = attempt[0]
+            wasPlaced = attempt[1]
+            if(wasPlaced):
+                startTime = time.time()
+                shipLength = shipLength - 1
+
             pygame.display.update()
         else:
             shipsCopy.pop(0)
