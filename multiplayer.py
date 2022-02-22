@@ -9,8 +9,9 @@ import get_ships_num
 import get_game_mode
 import battleship
 
-def run():
+from random import randint
 
+def run():
 
     # get the number of ships that the user wants for the game and returns a 4 tupe with size and empty placed ships array
     arrays = get_ships_num.get_ships(battleship.player1ships, battleship.player2ships, battleship.SCREEN, battleship.player1placedShips, battleship.player2placedShips)
