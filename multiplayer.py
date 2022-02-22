@@ -83,6 +83,7 @@ def run():
                                 battleship.gameover = True
                                 add_text.add_text(battleship.SCREEN, 'Player 1 won!')
                                 pygame.display.update()
+                                pause(3)
                         # wait for 1 seconds and switch turn
                         pause(1)
                         if not battleship.gameover:
@@ -108,6 +109,7 @@ def run():
                                 battleship.gameover = True
                                 add_text.add_text(battleship.SCREEN, 'Player 2 won!')
                                 pygame.display.update()
+                                pause(3)
                         pause(1)
                         if not battleship.gameover:
                             add_text.add_black_screen(battleship.SCREEN)

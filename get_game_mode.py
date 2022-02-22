@@ -79,3 +79,91 @@ def get_index(screen, pos):
         return 2
     else:
         return -1
+
+
+
+
+
+
+
+# sets the difficulty for singleplayer
+def set_difficulty(screen):
+    # adds text 
+    add_text.add_text(screen, 'Choose Difficulty')
+    # start at false
+    optionsChosen = False
+    # return value for difficulty
+    difficulty = 1
+    # place the boxes for options
+    place_difficulty_options(screen)
+    # while nothing has been chosen
+    while not optionsChosen:
+        # get the position
+         pos = pygame.mouse.get_pos()
+         for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    # get the box that was selected and assign ships accordingly
+                    index = get_difficulty_index(screen, pos) 
+                    if index != -1:
+                        optionsChosen = True # set optionsChosen to true so loop will end
+                        screen.fill(BLACK, (0, 0, 490, 400))
+                        print(index)
+                        if index == 1:
+                            # easy
+                            difficulty = 1
+                        elif index == 2:
+                            # medium
+                            difficulty = 2
+                        elif index == 3:
+                            # hard
+                            difficulty = 3
+         pygame.display.update()
+    # returns the gamemode
+    return (difficulty)
+
+# creates rectangles for user to click and choose num of ships
+def place_difficulty_options(screen):
+    # used offset to move squares to center
+    offset = 45
+    # create rects for each choice
+    rect1 = pygame.Rect(90+offset,200,50,50)
+    rect2 = pygame.Rect(170+offset,200,50,50)
+    rect3 = pygame.Rect(250+offset,200,50,50)
+    # draw each rect
+    pygame.draw.rect(screen, WHITE, rect1, 1)
+    pygame.draw.rect(screen, WHITE, rect2, 1)
+    pygame.draw.rect(screen, WHITE, rect3, 1)
+    # add text to boxes
+    font = pygame.font.Font('freesansbold.ttf', 16)
+    text = font.render('Easy', True, RED)
+    textRect = text.get_rect()
+    textRect.center = (115+offset, 225)
+    screen.blit(text, textRect)
+    text = font.render('Med', True, RED)
+    textRect = text.get_rect()
+    textRect.center = (195+offset, 225)
+    screen.blit(text, textRect)
+    text = font.render('Hard', True, RED)
+    textRect = text.get_rect()
+    textRect.center = (275+offset, 225)
+    screen.blit(text, textRect)
+
+# gets the index of the user click so that we know what box they selected
+def get_difficulty_index(screen, pos):
+    offset = 45
+    rect1 = pygame.Rect(90+offset,200,50,50)
+    rect2 = pygame.Rect(170+offset,200,50,50)
+    rect3 = pygame.Rect(250+offset,200,50,50)
+    # collide point checks if pos is within the rect object
+    # based off of https://stackoverflow.com/questions/7415109/creating-a-rect-grid-in-pygame
+    if rect1.collidepoint(pos):
+        return 1
+    elif rect2.collidepoint(pos):
+        return 2
+    elif rect3.collidepoint(pos):
+        return 3
+    else:
+        return -1
