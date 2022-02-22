@@ -124,7 +124,7 @@ def set_difficulty(screen):
     # returns the gamemode
     return (difficulty)
 
-# creates rectangles for user to click and choose num of ships
+# creates rectangles for user to click and choose the difficulty
 def place_difficulty_options(screen):
     # used offset to move squares to center
     offset = 45
