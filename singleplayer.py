@@ -102,11 +102,12 @@ def easy():
                             battleship.player1Turn = False
         # if it is player 2 turn, say that and print their boards
         else:
-            add_text.add_text(battleship.SCREEN, 'Player 2 Turn')
+            add_text.add_text(battleship.SCREEN, 'Computers Turn')
+            pause(1)
             # battleship.printShipBoard(battleship.player2ShipBoard, battleship.player2placedShips, battleship.player1hits)
             battleship.printBoard(battleship.player2TargetBoard, battleship.player2hits, battleship.player2misses)
             add_text.add_labels_middle(battleship.SCREEN)
-            add_text.add_labels_ships(battleship.SCREEN)
+            # add_text.add_labels_ships(battleship.SCREEN)
             # otherwise repeat for player 2
             pos = (randint(260, 460), randint(100, 300))
             played = battleship.checkForCollision(battleship.player2TargetBoard, battleship.player1ShipBoard, pos, battleship.player2hits, battleship.player2misses, battleship.player1placedShips, battleship.copyPlayer1placedShips)
@@ -114,17 +115,18 @@ def easy():
             if played:
                 # battleship.printShipBoard(battleship.player2ShipBoard, battleship.player2placedShips, battleship.player1hits)
                 battleship.printBoard(battleship.player2TargetBoard, battleship.player2hits, battleship.player2misses)
-                add_text.add_labels_middle(battleship.SCREEN)
-                add_text.add_labels_ships(battleship.SCREEN)
+                # add_text.add_labels_middle(battleship.SCREEN)
+                # add_text.add_labels_ships(battleship.SCREEN)
                 pygame.display.update()
+                pause(1)
                 sunkenShip = battleship.shipSunk(battleship.copyPlayer1placedShips)
                 if(sunkenShip):
-                    add_text.add_text(battleship.SCREEN, 'You sunk a ship!')
+                    add_text.add_text(battleship.SCREEN, 'Computer sunk a ship!')
                     pygame.display.update()
                     ended = battleship.gameIsOver(battleship.copyPlayer1placedShips)
                     if ended:
                         battleship.gameover = True
-                        add_text.add_text(battleship.SCREEN, 'Player 2 won!')
+                        add_text.add_text(battleship.SCREEN, 'Computer won!')
                         pygame.display.update()
                         pause(3)
                 pause(1)
