@@ -32,12 +32,14 @@ def run():
             place_ships.placePlayer1Ships(battleship.SCREEN, battleship.player1ships, battleship.player1placedShips, battleship.player1ShipBoard)
             battleship.player1ready = True
             #create non pointer copy
-            battleship.copyPlayer1placedShips = battleship.createShallowCopy(battleship.player1placedShips)  
+            battleship.copyPlayer1placedShips = battleship.createShallowCopy(battleship.player1placedShips)
+            add_text.add_black_screen(battleship.SCREEN)
         # repeat for player 2
         if not battleship.player2ready:
             place_ships.placePlayer2Ships(battleship.SCREEN, battleship.player2ships, battleship.player2placedShips, battleship.player2ShipBoard)
             battleship.player2ready = True
-            battleship.copyPlayer2placedShips = battleship.createShallowCopy(battleship.player2placedShips)  
+            battleship.copyPlayer2placedShips = battleship.createShallowCopy(battleship.player2placedShips)
+            add_text.add_black_screen(battleship.SCREEN)
         # add text saying battleship and add rows and cols
         add_text.add_text(battleship.SCREEN, 'Battleship')
         add_text.add_labels_targets(battleship.SCREEN)
@@ -89,8 +91,6 @@ def run():
                         pause(1)
                         if not battleship.gameover:
                             add_text.add_black_screen(battleship.SCREEN)
-                            pygame.display.update()
-                            pause(2)
                         battleship.player1Turn = False
                 else:
                     # otherwise repeat for player 2
@@ -114,8 +114,6 @@ def run():
                         pause(1)
                         if not battleship.gameover:
                             add_text.add_black_screen(battleship.SCREEN)
-                            pygame.display.update()
-                            pause(2)
                         battleship.player1Turn = True
 
         pygame.display.update()

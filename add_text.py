@@ -21,6 +21,8 @@ def add_text(screen, text):
 def add_black_screen(screen):
     screen.fill(BLACK, (0,0, 490, 400))
     add_text(screen, 'Switching turns, do not cheat!')
+    pygame.display.update()
+    pause(2)
 # called if the player has taken too long to place ships
 # displays that game will be ending
 def time_out(screen):
