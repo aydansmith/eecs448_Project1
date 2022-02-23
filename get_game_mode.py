@@ -12,7 +12,7 @@ WHITE = (200, 200, 200)
 RED = (255, 0, 0)
 
 def set_mode(screen):
-    # adds text 
+    # adds text
     add_text.add_text(screen, 'Choose Number of Players')
     # start at false
     optionsChosen = False
@@ -30,7 +30,7 @@ def set_mode(screen):
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # get the box that was selected and assign ships accordingly
-                    index = get_index(screen, pos) 
+                    index = get_index(screen, pos)
                     if index != -1:
                         optionsChosen = True # set optionsChosen to true so loop will end
                         screen.fill(BLACK, (0, 0, 490, 400))
@@ -88,7 +88,7 @@ def get_index(screen, pos):
 
 # sets the difficulty for singleplayer
 def set_difficulty(screen):
-    # adds text 
+    # adds text
     add_text.add_text(screen, 'Choose Difficulty')
     # start at false
     optionsChosen = False
@@ -106,7 +106,7 @@ def set_difficulty(screen):
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # get the box that was selected and assign ships accordingly
-                    index = get_difficulty_index(screen, pos) 
+                    index = get_difficulty_index(screen, pos)
                     if index != -1:
                         optionsChosen = True # set optionsChosen to true so loop will end
                         screen.fill(BLACK, (0, 0, 490, 400))
