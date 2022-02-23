@@ -64,6 +64,10 @@ def placePlayer1Ships(screen, ships, placedShips, shipBoard):
                 shipLength = shipsCopy[0]
                 initialLength = shipLength
                 index = index + 1
+    battleship.printShipBoard(shipBoard, placedShips, [])
+    pygame.display.update()
+    pause(1)
+
 # same as above but for player 2
 def placePlayer2Ships(screen, ships, placedShips, shipBoard):
     shipsCopy = ships
@@ -106,12 +110,13 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
                 shipLength = shipsCopy[0]
                 initialLength = shipLength
                 index = index + 1
-
+    battleship.printShipBoard(shipBoard, placedShips, [])
+    pygame.display.update()
+    pause(1)
 
 #places the ships for the AI randomly
 # !!!! still needs to implement a check to see if a ship will fit before starting to place
 def placeAiShips(screen, ships, placedShips, shipBoard):
-    print("place AI")
     shipsCopy = ships
     index = 0
     shipLength = shipsCopy[0]
@@ -127,11 +132,11 @@ def placeAiShips(screen, ships, placedShips, shipBoard):
             sys.exit()
         if(shipLength > 0):
             stringofint = (str)(initialLength)
-            toDisplay = 'Player 2, place your ship of length ' + stringofint
+            toDisplay = 'Computer, place your ship of length ' + stringofint
             add_text.add_text(screen, toDisplay)
             # pos = pygame.mouse.get_pos()
-            x = randint(1, 490)
-            y = randint(1, 400)
+            x = randint(30, 230)
+            y = randint(100, 300)
             pos = (x, y)
             battleship.printShipBoard(shipBoard, placedShips, [])   
             attempt = addShip(shipBoard, placedShips, index, pos)
@@ -149,6 +154,10 @@ def placeAiShips(screen, ships, placedShips, shipBoard):
                 shipLength = shipsCopy[0]
                 initialLength = shipLength
                 index = index + 1
+    battleship.printShipBoard(shipBoard, placedShips, [])
+    pygame.display.update()
+    
+    pause(1)
 
 
 # handles logic for adding ship
