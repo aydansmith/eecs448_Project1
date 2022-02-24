@@ -263,9 +263,9 @@ def printBoard(board, hits, misses):
     for x in board:
         for y in x:
             if(inHits(hits, y)):
-                pygame.draw.rect(SCREEN, RED, y, 1)
+                pygame.draw.rect(SCREEN, RED, y)
             elif(inMisses(misses, y)):
-                pygame.draw.rect(SCREEN, GREEN, y, 1)
+                pygame.draw.rect(SCREEN, GREEN, y)
             else:
                 pygame.draw.rect(SCREEN, WHITE, y, 1)
 
@@ -277,11 +277,11 @@ def printShipBoard(board, ships, hits, misses):
         for y in x:
             if(inShips(ships, y)):
                 if(inHits(hits, y)):
-                    pygame.draw.rect(SCREEN, RED, y, 1)
+                    pygame.draw.rect(SCREEN, RED, y)
                 else:
-                    pygame.draw.rect(SCREEN, BLUE, y, 1)
+                    pygame.draw.rect(SCREEN, BLUE, y)
             elif(inMisses(misses, y)):
-                pygame.draw.rect(SCREEN, GREEN, y, 1)
+                pygame.draw.rect(SCREEN, GREEN, y)
             else:
                 pygame.draw.rect(SCREEN, WHITE, y, 1)
 

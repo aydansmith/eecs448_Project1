@@ -87,6 +87,8 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
             stringofint = (str)(initialLength)
             toDisplay = 'Player 2, place your ship of length ' + stringofint
             add_text.add_text(screen, toDisplay)
+            add_text.add_labels_ships(screen)
+            add_text.add_labels_middle(screen)
             pos = pygame.mouse.get_pos()
             battleship.printShipBoard(shipBoard, placedShips, [], [])
             # createPlayer1ShipGrid()
