@@ -47,6 +47,7 @@ def run():
     if(difficulty == 3):
         hard()
 
+
 def easy():
     pause(5)
     print(1)
@@ -62,7 +63,7 @@ def easy():
         # if it is player 1 turn, say that and print their boards
         if(battleship.player1Turn):
             add_text.add_text(battleship.SCREEN, 'Player 1 Turn')
-            battleship.printShipBoard(battleship.player1ShipBoard, battleship.player1placedShips, battleship.player2hits)
+            battleship.printShipBoard(battleship.player1ShipBoard, battleship.player1placedShips, battleship.player2hits, battleship.player2misses)
             battleship.printBoard(battleship.player1TargetBoard, battleship.player1hits, battleship.player1misses)
             add_text.add_labels_middle(battleship.SCREEN)
             add_text.add_labels_ships(battleship.SCREEN)
@@ -78,7 +79,7 @@ def easy():
                         played = battleship.checkForCollision(battleship.player1TargetBoard, battleship.player2ShipBoard, pos, battleship.player1hits, battleship.player1misses, battleship.player2placedShips, battleship.copyPlayer2placedShips)
                         if played: 
                             # if they made a valid move, update the boards
-                            battleship.printShipBoard(battleship.player1ShipBoard, battleship.player1placedShips, battleship.player2hits)
+                            battleship.printShipBoard(battleship.player1ShipBoard, battleship.player1placedShips, battleship.player2hits, battleship.player2misses)
                             battleship.printBoard(battleship.player1TargetBoard, battleship.player1hits, battleship.player1misses)
                             add_text.add_labels_middle(battleship.SCREEN)
                             add_text.add_labels_ships(battleship.SCREEN)
@@ -102,21 +103,14 @@ def easy():
                             battleship.player1Turn = False
         # if it is player 2 turn, say that and print their boards
         else:
+            add_text.add_black_screen(battleship.SCREEN)
             add_text.add_text(battleship.SCREEN, 'Computers Turn')
+            pygame.display.update()
             pause(1)
-            # battleship.printShipBoard(battleship.player2ShipBoard, battleship.player2placedShips, battleship.player1hits)
-            battleship.printBoard(battleship.player2TargetBoard, battleship.player2hits, battleship.player2misses)
-            add_text.add_labels_middle(battleship.SCREEN)
-            # add_text.add_labels_ships(battleship.SCREEN)
-            # otherwise repeat for player 2
             pos = (randint(260, 460), randint(100, 300))
-            played = battleship.checkForCollision(battleship.player2TargetBoard, battleship.player1ShipBoard, pos, battleship.player2hits, battleship.player2misses, battleship.player1placedShips, battleship.copyPlayer1placedShips)
+            played = battleship.checkForCollisionAI(battleship.player2TargetBoard, battleship.player1ShipBoard, pos, battleship.player2hits, battleship.player2misses, battleship.player1placedShips, battleship.copyPlayer1placedShips)
             pos = pygame.mouse.get_pos()
             if played:
-                # battleship.printShipBoard(battleship.player2ShipBoard, battleship.player2placedShips, battleship.player1hits)
-                battleship.printBoard(battleship.player2TargetBoard, battleship.player2hits, battleship.player2misses)
-                # add_text.add_labels_middle(battleship.SCREEN)
-                # add_text.add_labels_ships(battleship.SCREEN)
                 pygame.display.update()
                 pause(1)
                 sunkenShip = battleship.shipSunk(battleship.copyPlayer1placedShips)
