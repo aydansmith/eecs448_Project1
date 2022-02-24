@@ -40,7 +40,7 @@ def placePlayer1Ships(screen, ships, placedShips, shipBoard):
             # get mouse position
             pos = pygame.mouse.get_pos()
             # print ship board for player 1
-            battleship.printShipBoard(shipBoard, placedShips, [])
+            battleship.printShipBoard(shipBoard, placedShips, [], [])
             # handle events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -64,7 +64,7 @@ def placePlayer1Ships(screen, ships, placedShips, shipBoard):
                 shipLength = shipsCopy[0]
                 initialLength = shipLength
                 index = index + 1
-    battleship.printShipBoard(shipBoard, placedShips, [])
+    battleship.printShipBoard(shipBoard, placedShips, [], [])
     pygame.display.update()
     pause(1)
 
@@ -88,7 +88,7 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
             toDisplay = 'Player 2, place your ship of length ' + stringofint
             add_text.add_text(screen, toDisplay)
             pos = pygame.mouse.get_pos()
-            battleship.printShipBoard(shipBoard, placedShips, [])
+            battleship.printShipBoard(shipBoard, placedShips, [], [])
             # createPlayer1ShipGrid()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -110,7 +110,7 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
                 shipLength = shipsCopy[0]
                 initialLength = shipLength
                 index = index + 1
-    battleship.printShipBoard(shipBoard, placedShips, [])
+    battleship.printShipBoard(shipBoard, placedShips, [], [])
     pygame.display.update()
     pause(1)
 
@@ -132,13 +132,14 @@ def placeAiShips(screen, ships, placedShips, shipBoard):
             sys.exit()
         if(shipLength > 0):
             stringofint = (str)(initialLength)
-            toDisplay = 'Computer, place your ship of length ' + stringofint
+            screen.fill(battleship.BLACK, (0,0, 490, 400))
+            toDisplay = 'Computer is placing ships'
             add_text.add_text(screen, toDisplay)
             # pos = pygame.mouse.get_pos()
             x = randint(30, 230)
             y = randint(100, 300)
             pos = (x, y)
-            battleship.printShipBoard(shipBoard, placedShips, [])   
+            # battleship.printShipBoard(shipBoard, placedShips, [], [])   
             attempt = addShip(shipBoard, placedShips, index, pos)
             placedShips = attempt[0]
             wasPlaced = attempt[1]
@@ -154,9 +155,8 @@ def placeAiShips(screen, ships, placedShips, shipBoard):
                 shipLength = shipsCopy[0]
                 initialLength = shipLength
                 index = index + 1
-    battleship.printShipBoard(shipBoard, placedShips, [])
     pygame.display.update()
-    
+    print("AI placement successful")
     pause(1)
 
 

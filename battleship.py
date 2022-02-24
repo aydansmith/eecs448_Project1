@@ -141,6 +141,39 @@ def checkForCollision(targetBoard, shipBoard, pos, hits, misses, shipsPlaced, sh
     # return true since if you make it this far is was a valud move
     return True
 
+# same code as above, except it prints for the computer not the player
+def checkForCollisionAI(targetBoard, shipBoard, pos, hits, misses, shipsPlaced, shipsCopy):
+    hit = False 
+    # get the rect object and row and col
+    rect = getRectangle(targetBoard, pos)
+    row = getRow(targetBoard, rect)
+    col = getCol(targetBoard, rect)
+    # if you have an invalid row, then you did not hit anything and need new user input
+    if row == -1 or col == -1:
+        return False
+    else:
+        # otherwisecheck if you already hit the ship or already missed it, since you would need new user input
+        tempRectTarget = (targetBoard[row])[col]
+        tempRectShip = (shipBoard[row])[col]
+        alreadyHit = inHits(hits, tempRectShip)
+        alreadyMissed = inMisses(misses, tempRectShip)
+        if alreadyHit or alreadyMissed: 
+            return False
+        # if it is in their ships, you have a hit
+        inShipsList = inShips(shipsPlaced, tempRectShip)
+        if inShipsList:
+            add_text.add_text(SCREEN, 'Computer hit a ship!')
+            hits.append(tempRectTarget)
+            hits.append(tempRectShip)
+            removeFromShipsCopy(tempRectShip, shipsCopy)
+        else:
+            # otherwise you missed
+            add_text.add_text(SCREEN, 'Computer did not hit a ship!')
+            misses.append(tempRectTarget)
+            misses.append(tempRectShip)
+    # return true since if you make it this far is was a valud move
+    return True
+
 # removes rect from the copy so that you can track what ships have been hit    
 def removeFromShipsCopy(rect, shipsCopy):
     for x in shipsCopy:
@@ -239,7 +272,7 @@ def printBoard(board, hits, misses):
 # following code is inspired and similar to thread on creating a grid for a snake game in pygane
 # https://stackoverflow.com/questions/33963361/how-to-make-a-grid-in-pygame
 # prints a board given 2-d array created in above functions. shows which of your ships have been hit
-def printShipBoard(board, ships, hits):
+def printShipBoard(board, ships, hits, misses):
     for x in board:
         for y in x:
             if(inShips(ships, y)):
@@ -247,6 +280,8 @@ def printShipBoard(board, ships, hits):
                     pygame.draw.rect(SCREEN, RED, y, 1)
                 else:
                     pygame.draw.rect(SCREEN, BLUE, y, 1)
+            elif(inMisses(misses, y)):
+                pygame.draw.rect(SCREEN, GREEN, y, 1)
             else:
                 pygame.draw.rect(SCREEN, WHITE, y, 1)
 
