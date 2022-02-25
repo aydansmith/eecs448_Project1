@@ -266,8 +266,7 @@ def printBoard(board, hits, misses):
                 pygame.draw.rect(SCREEN, RED, y)
             elif(inMisses(misses, y)):
                 pygame.draw.rect(SCREEN, GREEN, y)
-            else:
-                pygame.draw.rect(SCREEN, WHITE, y, 1)
+            pygame.draw.rect(SCREEN, WHITE, y, 1)
 
 # following code is inspired and similar to thread on creating a grid for a snake game in pygane
 # https://stackoverflow.com/questions/33963361/how-to-make-a-grid-in-pygame
@@ -282,8 +281,7 @@ def printShipBoard(board, ships, hits, misses):
                     pygame.draw.rect(SCREEN, BLUE, y)
             elif(inMisses(misses, y)):
                 pygame.draw.rect(SCREEN, GREEN, y)
-            else:
-                pygame.draw.rect(SCREEN, WHITE, y, 1)
+            pygame.draw.rect(SCREEN, WHITE, y, 1)
 
 
 
