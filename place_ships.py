@@ -49,7 +49,7 @@ def placePlayer1Ships(screen, ships, placedShips, shipBoard):
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # if the mouse was clicked, check that the ship placement is valid
                     # returns a 2 tuple with placedShips and a bool of if it was placed
-                    attempt = addShip(shipBoard, placedShips, index, pos)
+                    attempt = addShip(shipBoard, placedShips, index, pos, shipLength)
                     placedShips = attempt[0]
                     wasPlaced = attempt[1]
                     # if it was placed, updaate start time and decrease ship length
@@ -97,7 +97,7 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    attempt = addShip(shipBoard, placedShips, index, pos)
+                    attempt = addShip(shipBoard, placedShips, index, pos, shipLength)
                     placedShips = attempt[0]
                     wasPlaced = attempt[1]
                     if(wasPlaced):
@@ -142,7 +142,7 @@ def placeAiShips(screen, ships, placedShips, shipBoard):
             y = randint(100, 300)
             pos = (x, y)
             # battleship.printShipBoard(shipBoard, placedShips, [], [])   
-            attempt = addShip(shipBoard, placedShips, index, pos)
+            attempt = addShip(shipBoard, placedShips, index, pos, shipLength)
             placedShips = attempt[0]
             wasPlaced = attempt[1]
             if(wasPlaced):
@@ -163,7 +163,7 @@ def placeAiShips(screen, ships, placedShips, shipBoard):
 
 
 # handles logic for adding ship
-def addShip(shipBoard, placedShips, index, pos):
+def addShip(shipBoard, placedShips, index, pos, shipLength):
     # starts at false
     shipAdded = False
     # gets the current ship
@@ -173,16 +173,19 @@ def addShip(shipBoard, placedShips, index, pos):
     # if row is invalid, make user click new spot
     if battleship.getRow(shipBoard, rect) == -1 or battleship.getCol(shipBoard, rect) == -1:
         return(placedShips, shipAdded) 
+
     # otherwise if it is a new ship make sure it is not already placed
     if(len(currentShip) == 0):
         alreadyPlaced = inShips(placedShips, pos)
-        if not alreadyPlaced:
+        valid = validPlacement(shipBoard, placedShips, index, pos, shipLength)
+        if ((not alreadyPlaced) and valid):
             currentShip = addToShips(placedShips, pos, currentShip, shipBoard)
             shipAdded = True
     else:
         # if ship already exists, check that new addition isn't already placed and check that it touches the current ship
         alreadyPlaced = inShips(placedShips, pos)
-        if not alreadyPlaced:
+        valid = validPlacement(shipBoard, placedShips, index, pos, shipLength)
+        if ((not alreadyPlaced) and valid):
             touchesShipCheck = touchesShip(shipBoard, placedShips, index, pos)
             if touchesShipCheck:
                 currentShip = addToShips(placedShips, pos, currentShip, shipBoard)
@@ -258,3 +261,84 @@ def addToShips(placedShips, pos, currentShip, shipBoard):
                 return currentShip
     return currentShip
     
+
+def validPlacement(shipBoard, placedShips, index, pos, shipLength):
+    counter = 0
+    coordinates = (math.floor(((pos[0])-100)/20), math.floor(((pos[1])-100)/20))
+    currentShip = placedShips[index]
+    rect = battleship.getRectangle(shipBoard, pos)
+    row = battleship.getRow(shipBoard, rect)
+    col = battleship.getCol(shipBoard, rect)
+
+    if len(currentShip) == 0:
+        if validHorz(row, col, placedShips, shipLength) or validVert(row, col, placedShips, shipLength):
+            return(True)
+    elif len(currentShip) == 1:
+        ship1 = currentShip[0]
+        ship1row = battleship.getRow(shipBoard, ship1)
+        ship1col = battleship.getCol(shipBoard, ship1)
+        if ship1row == coordinates[0]:
+            if validHorz(row, col, placedShips, shipLength):
+                return(True)
+        elif ship1col == coordinates[1]:
+            if validVert(row, col, placedShips, shipLength):
+                return(True)
+        return(False)
+    else:
+        ship1 = currentShip[0]
+        ship1row = battleship.getRow(shipBoard, ship1)
+        ship1col = battleship.getCol(shipBoard, ship1)
+        for stepper in range(1, shipLength+1):
+            temprow = ship1row + stepper
+            tempcol = ship1col + stepper
+            if ship1row == coordinates[0]:
+                tempPos = ((30 + (pos[0])*20), (100 + tempcol*20))
+                alreadyPlaced = inShips(placedShips, tempPos)
+                if alreadyPlaced:
+                    counter = counter + 1
+            elif ship1col == coordinates[1]:
+                tempPos = ((30 + temprow*20), (100 + (pos[1])*20))
+                alreadyPlaced = inShips(placedShips, tempPos)
+                if alreadyPlaced:
+                    counter = counter + 1
+        if counter == 0:
+            return(True)
+    return(False)
+
+def validHorz(row, col, placedShips, shipLength):
+    check1 = True
+    check2 = True
+    print(shipLength)
+    for stepper in range(1, shipLength):
+        tempcol = col + stepper
+        tempPos = ((30 + row*20), (100 + tempcol*20))
+        alreadyPlaced = inShips(placedShips, tempPos)
+        if alreadyPlaced:
+            check1 = False
+    for stepper in range(1, shipLength):
+        tempcol = col - stepper
+        tempPos = ((30 + row*20), (100 + tempcol*20))
+        alreadyPlaced = inShips(placedShips, tempPos)
+        if alreadyPlaced:
+            check2 = False
+    return(check1 or check2)
+
+def validVert(row, col, placedShips, shipLength):
+    check1 = True
+    check2 = True
+    print(shipLength)
+    for stepper in range(1, shipLength):
+        temprow = row + stepper
+        tempPos = ((30 + temprow*20), (100 + col*20))
+        alreadyPlaced = inShips(placedShips, tempPos)
+        if alreadyPlaced:
+            check1 = False
+    for stepper in range(1, shipLength):
+        temprow = row - stepper
+        tempPos = ((30 + temprow*20), (100 + col*20))
+        alreadyPlaced = inShips(placedShips, tempPos)
+        if alreadyPlaced:
+            check2 = False
+    return(check1 or check2)
+
+    # check out of bounds 
