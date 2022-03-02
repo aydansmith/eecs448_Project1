@@ -193,7 +193,6 @@ def addShip(shipBoard, placedShips, index, pos, shipLength):
     # add current ship to placedships
     placedShips[index] = currentShip
     # return placed ships and a bool of if it was added
-    print(shipAdded)
     return (placedShips, shipAdded)
 
 # checks that your placement touches the part of the ship already placed
