@@ -1,5 +1,7 @@
 from audioop import add
 import math
+from optparse import Option
+from turtle import position, right
 from matplotlib.pyplot import pause
 from numpy import place
 import pygame
@@ -7,7 +9,7 @@ import sys
 import battleship
 import add_text
 import time
-from random import randint
+from random import randint, choice
 
 # handles placing of player 1s ships
 def placePlayer1Ships(screen, ships, placedShips, shipBoard):
@@ -49,7 +51,7 @@ def placePlayer1Ships(screen, ships, placedShips, shipBoard):
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     # if the mouse was clicked, check that the ship placement is valid
                     # returns a 2 tuple with placedShips and a bool of if it was placed
-                    attempt = addShip(shipBoard, placedShips, index, pos, shipLength)
+                    attempt = addShip(shipBoard, placedShips, index, pos)
                     placedShips = attempt[0]
                     wasPlaced = attempt[1]
                     # if it was placed, updaate start time and decrease ship length
@@ -97,7 +99,7 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
-                    attempt = addShip(shipBoard, placedShips, index, pos, shipLength)
+                    attempt = addShip(shipBoard, placedShips, index, pos)
                     placedShips = attempt[0]
                     wasPlaced = attempt[1]
                     if(wasPlaced):
@@ -121,6 +123,7 @@ def placePlayer2Ships(screen, ships, placedShips, shipBoard):
 def placeAiShips(screen, ships, placedShips, shipBoard):
     shipsCopy = ships
     index = 0
+    shipsRectPosIndex = 0
     shipLength = shipsCopy[0]
     initialLength = shipLength
     startTime = time.time()
@@ -138,17 +141,17 @@ def placeAiShips(screen, ships, placedShips, shipBoard):
             toDisplay = 'Computer is placing ships'
             add_text.add_text(screen, toDisplay)
             # pos = pygame.mouse.get_pos()
-            x = randint(30, 230)
-            y = randint(100, 300)
-            pos = (x, y)
+            if initialLength == shipLength:
+                posArr = findValidRandPos(initialLength,placedShips)
+            pos = posArr[shipsRectPosIndex]
             # battleship.printShipBoard(shipBoard, placedShips, [], [])   
-            attempt = addShip(shipBoard, placedShips, index, pos, shipLength)
+            attempt = addShip(shipBoard, placedShips, index, pos)
             placedShips = attempt[0]
             wasPlaced = attempt[1]
             if(wasPlaced):
                 startTime = time.time()
                 shipLength = shipLength - 1
-
+                shipsRectPosIndex += 1
             pygame.display.update()
         else:
             shipsCopy.pop(0)
@@ -157,13 +160,14 @@ def placeAiShips(screen, ships, placedShips, shipBoard):
                 shipLength = shipsCopy[0]
                 initialLength = shipLength
                 index = index + 1
+                shipsRectPosIndex = 0
     pygame.display.update()
     print("AI placement successful")
     pause(1)
 
 
 # handles logic for adding ship
-def addShip(shipBoard, placedShips, index, pos, shipLength):
+def addShip(shipBoard, placedShips, index, pos):
     # starts at false
     shipAdded = False
     # gets the current ship
@@ -173,19 +177,16 @@ def addShip(shipBoard, placedShips, index, pos, shipLength):
     # if row is invalid, make user click new spot
     if battleship.getRow(shipBoard, rect) == -1 or battleship.getCol(shipBoard, rect) == -1:
         return(placedShips, shipAdded) 
-
     # otherwise if it is a new ship make sure it is not already placed
     if(len(currentShip) == 0):
         alreadyPlaced = inShips(placedShips, pos)
-        valid = validPlacement(shipBoard, placedShips, index, pos, shipLength)
-        if ((not alreadyPlaced) and valid):
+        if not alreadyPlaced:
             currentShip = addToShips(placedShips, pos, currentShip, shipBoard)
             shipAdded = True
     else:
         # if ship already exists, check that new addition isn't already placed and check that it touches the current ship
         alreadyPlaced = inShips(placedShips, pos)
-        valid = validPlacement(shipBoard, placedShips, index, pos, shipLength)
-        if ((not alreadyPlaced) and valid):
+        if not alreadyPlaced:
             touchesShipCheck = touchesShip(shipBoard, placedShips, index, pos)
             if touchesShipCheck:
                 currentShip = addToShips(placedShips, pos, currentShip, shipBoard)
@@ -261,53 +262,47 @@ def addToShips(placedShips, pos, currentShip, shipBoard):
                 return currentShip
     return currentShip
     
-#checks if a ship will fit in a space before allowing placement
-def validPlacement(shipBoard, placedShips, index, pos, shipLength):
-    currentShip = placedShips[index]
-    rect = battleship.getRectangle(shipBoard, pos)
-    row = battleship.getRow(shipBoard, rect)
-    col = battleship.getCol(shipBoard, rect)
-    if len(currentShip) == 0:
-        if spaceHorz(row, col, placedShips, shipLength) or spaceVert(row, col, placedShips, shipLength):
-            return(True)
-        else:
-            return(False)
-    return(True)
+# finds a valid random position to place a ship
+def findValidRandPos(shipLength,placedShips):
+    isPlaced = True
+    while isPlaced:
+        x = randint(30, 230)
+        y = randint(100, 300)
+        pos = (x, y)
+        possiblePositionsArr = [] 
+        if pos[0]+(20*shipLength) <= 210: # right
+            possiblePositionsArr.append((pos[0]+(20*shipLength),pos[1]))
+        if pos[0]-(20*shipLength) >= 30: # left
+            possiblePositionsArr.append((pos[0]-(20*shipLength),pos[1]))
+        if pos[1]+(20*shipLength) <= 280: # down
+            possiblePositionsArr.append((pos[0],pos[1]+(20*shipLength)))
+        if pos[1]-(20*shipLength) >= 100: # up
+            possiblePositionsArr.append((pos[0],pos[1]-(20*shipLength)))
 
-# checks if there is enough horizontal space for the whole ship
-def spaceHorz(row, col, placedShips, shipLength):
-    check1 = True
-    check2 = True
-    print(shipLength)
-    for stepper in range(0, shipLength):
-        tempcol = col + stepper
-        tempPos = ((30 + row*20), (100 + tempcol*20))
-        alreadyPlaced = inShips(placedShips, tempPos)
-        if alreadyPlaced or (tempcol >= 10):
-            check1 = False
-    for stepper in range(0, shipLength):
-        tempcol = col - stepper
-        tempPos = ((30 + row*20), (100 + tempcol*20))
-        alreadyPlaced = inShips(placedShips, tempPos)
-        if alreadyPlaced or (tempcol < 0):
-            check2 = False
-    return(check1 or check2)
+        # picks a possible placement for the ship
+        shipEndPos = choice(possiblePositionsArr)
 
-#checks if there is enough vertical space for the entire ship
-def spaceVert(row, col, placedShips, shipLength):
-    check1 = True
-    check2 = True
-    print(shipLength)
-    for stepper in range(0, shipLength):
-        temprow = row + stepper
-        tempPos = ((30 + temprow*20), (100 + col*20))
-        alreadyPlaced = inShips(placedShips, tempPos)
-        if alreadyPlaced or (temprow >= 10):
-            check1 = False
-    for stepper in range(0, shipLength):
-        temprow = row - stepper
-        tempPos = ((30 + temprow*20), (100 + col*20))
-        alreadyPlaced = inShips(placedShips, tempPos)
-        if alreadyPlaced or (temprow < 0):
-            check2 = False
-    return(check1 or check2)
+        # Appends the rect pos to an array
+        if shipEndPos[0] > pos[0]: # goes right
+            shipRectPos = []
+            for i in range(1,shipLength+1):
+                shipRectPos.append((pos[0]+(20*i),pos[1]))   
+        elif shipEndPos[0] < pos[0]: # goes left
+            shipRectPos = []
+            for i in range(1,shipLength+1):
+                shipRectPos.append((pos[0]-(20*i),pos[1])) 
+        elif shipEndPos[1] > pos[1]: # goes down
+            shipRectPos = []
+            for i in range(1,shipLength+1):
+                shipRectPos.append((pos[0],pos[1]+(20*i)))  
+        else: # goes up
+            shipRectPos = []
+            for i in range(1,shipLength+1):
+                shipRectPos.append((pos[0],pos[1]-(20*i))) 
+        
+        #checks if there is collision, if there is it finds anout starting position until it finds a valid spot
+        for i in range(len(shipRectPos)):
+            isPlaced = inShips(placedShips,shipRectPos[i])
+            if isPlaced: break
+    
+    return shipRectPos
