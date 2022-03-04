@@ -8,8 +8,19 @@ import place_ships
 import get_ships_num
 import get_game_mode
 import battleship
+import special_shot
 
 from random import randint
+
+pygame.init()
+color = (255,255,255)
+color_light = (170,170,170)
+color_dark = (100,100,100)
+SCREEN = pygame.display.set_mode((490, 400))
+font = pygame.font.Font('freesansbold.ttf', 16)
+smallfont = pygame.font.SysFont('Corbel',35)
+Specialtext = smallfont.render('Special shot' , True , color)
+Specialtext1 = smallfont.render('Vip for more' , True , color)
 
 def run():
 
@@ -19,10 +30,12 @@ def run():
     battleship.player2ships = arrays[1]
     battleship.player1placedShips = arrays[2]
     battleship.player2placedShips = arrays[3]
-
+    Player1Specialtexttime = 1
+    Player2Specialtexttime = 1
+    thistimeSpecial = False
     #run while the game is not ended
     while not battleship.gameover:
-        
+
         # gets the position of the mouse on the screen
         pos = pygame.mouse.get_pos()
 
@@ -61,13 +74,36 @@ def run():
         for event in pygame.event.get():
             # if the user wants to quit, close pygame
             # if the user clicks, we respond accordingly
+            if 150 <= pos[0] <= 400 and 350 <= pos[1] <= 400:
+                pygame.draw.rect(SCREEN,color_light,[150,350,2.0,50])
+            else:
+                pygame.draw.rect(SCREEN,color_dark,[150,350,200,50])
+            if(battleship.player1Turn):
+                Specialtexttime = Player1Specialtexttime
+            else:
+                Specialtexttime = Player2Specialtexttime
+                
+            if Specialtexttime > 0:
+                SCREEN.blit(Specialtext,(165,360))
+            else:
+                SCREEN.blit(Specialtext1,(165,360))
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # if it is player 1 turn, check for a hit and checkForCollision will handle all the logic for updating hits and misses
                 if(battleship.player1Turn):
-                    played = battleship.checkForCollision(battleship.player1TargetBoard, battleship.player2ShipBoard, pos, battleship.player1hits, battleship.player1misses, battleship.player2placedShips, battleship.copyPlayer2placedShips)
+                    if Player1Specialtexttime > 0:
+                        if 150 <= pos[0] <= 350 and 350 <= pos[1] <= 400:
+                            thistimeSpecial = True
+                            Player1Specialtexttime = Player1Specialtexttime-1
+                            continue
+                    if thistimeSpecial == True:
+                        played = special_shot.check_collision(battleship.player1TargetBoard, battleship.player2ShipBoard, pos, battleship.player1hits, battleship.player1misses, battleship.player2placedShips, battleship.copyPlayer2placedShips)
+                        if played: 
+                            thistimeSpecial = False
+                    else:
+                        played = battleship.checkForCollision(battleship.player1TargetBoard, battleship.player2ShipBoard, pos, battleship.player1hits, battleship.player1misses, battleship.player2placedShips, battleship.copyPlayer2placedShips)
                     if played: 
                         # if they made a valid move, update the boards
                         battleship.printShipBoard(battleship.player1ShipBoard, battleship.player1placedShips, battleship.player2hits, battleship.player2misses)
@@ -94,7 +130,17 @@ def run():
                         battleship.player1Turn = False
                 else:
                     # otherwise repeat for player 2
-                    played = battleship.checkForCollision(battleship.player2TargetBoard, battleship.player1ShipBoard, pos, battleship.player2hits, battleship.player2misses, battleship.player1placedShips, battleship.copyPlayer1placedShips)
+                    if Player2Specialtexttime > 0:
+                        if 150 <= pos[0] <= 350 and 350 <= pos[1] <= 400:
+                            thistimeSpecial = True
+                            Player2Specialtexttime = Player2Specialtexttime-1
+                            continue
+                    if thistimeSpecial == True:
+                        played = special_shot.check_collision(battleship.player2TargetBoard, battleship.player1ShipBoard, pos, battleship.player2hits, battleship.player2misses, battleship.player1placedShips, battleship.copyPlayer1placedShips)
+                        if played: 
+                            thistimeSpecial = False
+                    else:
+                        played = battleship.checkForCollision(battleship.player2TargetBoard, battleship.player1ShipBoard, pos, battleship.player2hits, battleship.player2misses, battleship.player1placedShips, battleship.copyPlayer1placedShips)
                     if played:
                         battleship.printShipBoard(battleship.player2ShipBoard, battleship.player2placedShips, battleship.player1hits, battleship.player1misses)
                         battleship.printBoard(battleship.player2TargetBoard, battleship.player2hits, battleship.player2misses)
