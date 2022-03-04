@@ -9,7 +9,10 @@ import place_ships
 import get_ships_num
 import get_game_mode
 import battleship
+import special_shot
 from random import randint
+import sys
+
 
 def run():
 
@@ -46,14 +49,23 @@ def run():
 
     if(difficulty == 3):
         hard()
-
+pygame.init()
+color = (255,255,255)
+color_light = (170,170,170)
+color_dark = (100,100,100)
+SCREEN = pygame.display.set_mode((490, 400))
+font = pygame.font.Font('freesansbold.ttf', 16)
+smallfont = pygame.font.SysFont('Corbel',35)
+Specialtext = smallfont.render('Special shot' , True , color)
+Specialtext1 = smallfont.render('Vip for more' , True , color)
 
 def easy():
     pause(5)
     print(1)
+    Specialtexttime = 1
+    thistimeSpecial = False
      #run while the game is not ended
     while not battleship.gameover:
-        
         # gets the position of the mouse on the screen
         pos = pygame.mouse.get_pos()
         
@@ -67,40 +79,58 @@ def easy():
             battleship.printBoard(battleship.player1TargetBoard, battleship.player1hits, battleship.player1misses)
             add_text.add_labels_middle(battleship.SCREEN)
             add_text.add_labels_ships(battleship.SCREEN)
-            for event in pygame.event.get():
             # if the user wants to quit, close pygame
             # if the user clicks, we respond accordingly
+            if 150 <= pos[0] <= 400 and 350 <= pos[1] <= 400:
+                pygame.draw.rect(SCREEN,color_light,[150,350,2.0,50])
+            else:
+                pygame.draw.rect(SCREEN,color_dark,[150,350,200,50])
+            if Specialtexttime > 0:
+                SCREEN.blit(Specialtext,(165,360))
+            else:
+                SCREEN.blit(Specialtext1,(165,360))
+            for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.MOUSEBUTTONDOWN:
+                    add_text.add_text(battleship.SCREEN, 'Player 1 Turn')
+                    if Specialtexttime > 0:
+                        if 150 <= pos[0] <= 350 and 350 <= pos[1] <= 400:
+                            thistimeSpecial = True
+                            Specialtexttime = Specialtexttime-1
+                            continue
                     # if it is player 1 turn, check for a hit and checkForCollision will handle all the logic for updating hits and misses
-                    if(battleship.player1Turn):
-                        played = battleship.checkForCollision(battleship.player1TargetBoard, battleship.player2ShipBoard, pos, battleship.player1hits, battleship.player1misses, battleship.player2placedShips, battleship.copyPlayer2placedShips)
+                    if thistimeSpecial == True:
+                        played = special_shot.check_collision(battleship.player1TargetBoard, battleship.player2ShipBoard, pos, battleship.player1hits, battleship.player1misses, battleship.player2placedShips, battleship.copyPlayer2placedShips)
                         if played: 
-                            # if they made a valid move, update the boards
-                            battleship.printShipBoard(battleship.player1ShipBoard, battleship.player1placedShips, battleship.player2hits, battleship.player2misses)
-                            battleship.printBoard(battleship.player1TargetBoard, battleship.player1hits, battleship.player1misses)
-                            add_text.add_labels_middle(battleship.SCREEN)
-                            add_text.add_labels_ships(battleship.SCREEN)
+                            thistimeSpecial = False
+                    else:
+                        played = battleship.checkForCollision(battleship.player1TargetBoard, battleship.player2ShipBoard, pos, battleship.player1hits, battleship.player1misses, battleship.player2placedShips, battleship.copyPlayer2placedShips)
+                    if played: 
+                        # if they made a valid move, update the boards
+                        battleship.printShipBoard(battleship.player1ShipBoard, battleship.player1placedShips, battleship.player2hits, battleship.player2misses)
+                        battleship.printBoard(battleship.player1TargetBoard, battleship.player1hits, battleship.player1misses)
+                        add_text.add_labels_middle(battleship.SCREEN)
+                        add_text.add_labels_ships(battleship.SCREEN)
+                        pygame.display.update()
+                        # check for a sunk ship
+                        sunkenShip = battleship.shipSunk(battleship.copyPlayer2placedShips)
+                        # if they sunk a ship, check if all ships are sunk
+                        if(sunkenShip):
+                            add_text.add_text(battleship.SCREEN, 'You sunk a ship!')
                             pygame.display.update()
-                            # check for a sunk ship
-                            sunkenShip = battleship.shipSunk(battleship.copyPlayer2placedShips)
-                            # if they sunk a ship, check if all ships are sunk
-                            if(sunkenShip):
-                                add_text.add_text(battleship.SCREEN, 'You sunk a ship!')
+                            ended = battleship.gameIsOver(battleship.copyPlayer2placedShips)
+                            if ended:
+                                battleship.gameover = True
+                                add_text.add_text(battleship.SCREEN, 'Player 1 won!')
                                 pygame.display.update()
-                                ended = battleship.gameIsOver(battleship.copyPlayer2placedShips)
-                                if ended:
-                                    battleship.gameover = True
-                                    add_text.add_text(battleship.SCREEN, 'Player 1 won!')
-                                    pygame.display.update()
-                                    pause(3)
-                            # wait for 1 seconds and switch turn
-                            pause(1)
-                            if not battleship.gameover:
-                                add_text.add_black_screen(battleship.SCREEN)
-                            battleship.player1Turn = False
+                                pause(3)
+                        # wait for 1 seconds and switch turn
+                        pause(1)
+                        if not battleship.gameover:
+                            add_text.add_black_screen(battleship.SCREEN)
+                        battleship.player1Turn = False
         # if it is player 2 turn, say that and print their boards
         else:
             add_text.add_black_screen(battleship.SCREEN)
